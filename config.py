@@ -10,22 +10,22 @@ QDRANT_PATH = os.path.join(STORAGE_DIR, "qdrant_db")
 DOCSTORE_PATH = os.path.join(STORAGE_DIR, "docstore.json")
 
 # Model Configuration
-LLM_MODEL = "models/gemini-2.5-flash"
-EMBED_MODEL = "BAAI/bge-small-en-v1.5"
+LLM_MODEL = os.getenv("LLM_MODEL", "models/gemini-2.5-flash")
+EMBED_MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-small-en-v1.5")
 
 # Chunking Configuration
-CHUNK_SIZE = 512
-CHUNK_OVERLAP = 50
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "512"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "50"))
 
 # Retrieval Configuration
-VECTOR_TOP_K = 10  # Number of results from vector search
-BM25_TOP_K = 10    # Number of results from BM25 search
-RERANKER_TOP_N = 5  # Final number of results after re-ranking
-RERANKER_MODEL = "colbert-ir/colbertv2.0"
+VECTOR_TOP_K = int(os.getenv("VECTOR_TOP_K", "10"))  # Number of results from vector search
+BM25_TOP_K = int(os.getenv("BM25_TOP_K", "10"))    # Number of results from BM25 search
+RERANKER_TOP_N = int(os.getenv("RERANKER_TOP_N", "5"))  # Final number of results after re-ranking
+RERANKER_MODEL = os.getenv("RERANKER_MODEL", "colbert-ir/colbertv2.0")
 
 # Agent Configuration
-MAX_ITERATIONS = 10
-VERBOSE = True
+MAX_ITERATIONS = int(os.getenv("MAX_ITERATIONS", "10"))
+VERBOSE = os.getenv("VERBOSE", "True").lower() == "true"
 
 # Ensure directories exist
 os.makedirs(PDF_DIRECTORY, exist_ok=True)

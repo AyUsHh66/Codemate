@@ -48,7 +48,13 @@ def initialize_agent():
 
         # 2. Check for knowledge base
         if not os.path.exists(config.STORAGE_DIR):
-            raise FileNotFoundError(f"The storage directory '{config.STORAGE_DIR}' was not found. Ensure it's deployed with the application.")
+            log.warning(f"Storage directory '{config.STORAGE_DIR}' not found. Creating it...")
+            os.makedirs(config.STORAGE_DIR, exist_ok=True)
+            
+        # Check if the knowledge base needs to be created
+        if not os.path.exists(config.QDRANT_PATH):
+            log.warning("No existing knowledge base found. The ingestion process may need to be run.")
+            log.info("The application will start but may not have document data until ingestion is completed.")
 
         # 3. Setup Agent
         agent = setup_agent()
@@ -63,7 +69,44 @@ def initialize_agent():
 @app.route("/")
 def health_check():
     """A simple endpoint to confirm the server is running."""
-    return "Backend server is running."
+    return jsonify({
+        "status": "healthy",
+        "message": "Codemate Backend server is running",
+        "agent_initialized": agent is not None
+    })
+
+@app.route("/health")
+def health():
+    """Health check endpoint for deployment monitoring."""
+    if agent is None:
+        return jsonify({"status": "unhealthy", "reason": "Agent not initialized"}), 503
+    return jsonify({"status": "healthy"})
+
+@app.route('/ingest', methods=['POST'])
+def ingest_data():
+    """
+    Endpoint to trigger data ingestion.
+    This can be used to set up the knowledge base after deployment.
+    """
+    try:
+        # Import ingestion module
+        import ingestion
+        
+        log.info("Starting data ingestion process...")
+        # Run the ingestion process
+        ingestion.main()
+        log.info("Data ingestion completed successfully.")
+        
+        # Reinitialize agent if needed
+        global agent
+        if agent is None:
+            agent = setup_agent()
+            
+        return jsonify({"message": "Data ingestion completed successfully"})
+        
+    except Exception as e:
+        log.error(f"Error during data ingestion: {e}", exc_info=True)
+        return jsonify({"error": f"Data ingestion failed: {str(e)}"}), 500
 
 @app.route('/chat', methods=['POST'])
 def chat_endpoint():
