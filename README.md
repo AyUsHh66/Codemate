@@ -1,14 +1,44 @@
-Deep Researcher Agent
-A project for the #SRMHacksWithCodemate Challenge
+---
+title: Codemate Research Agent
+emoji: 🛡️
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+sdk_version: 4.26.0
+app_file: app.py
+pinned: false
+license: apache-2.0
+---
 
-This project is a sophisticated, offline-first AI agent designed to perform deep, multi-step reasoning on a local collection of academic documents. It leverages a powerful Retrieval-Augmented Generation (RAG) pipeline to answer complex questions by synthesizing information exclusively from the provided texts, without relying on any external web APIs.
-Live Demonstration
+# 🛡️ Codemate Research Agent
 
-(Optional but highly recommended: You can embed your project video or a GIF of it working here)
-A short video demonstrating the agent answering simple and complex queries.
-核心功能
+An intelligent research assistant powered by LlamaIndex and Gemini AI that can analyze documents and answer complex research questions.
 
-    High-Fidelity Document Parsing: Utilizes the Nougat vision-based model to accurately parse complex, multi-column academic PDF layouts into clean markdown, preserving the document's structure and content.
+## 🚀 Quick Start
+
+### Environment Variables
+**IMPORTANT**: Set these in your Space Settings → Variables:
+
+- `GOOGLE_API_KEY`: Your Google Gemini API key
+- `LLAMA_CLOUD_API_KEY`: Your LlamaCloud API key (optional)
+
+### Usage
+1. **Initialize**: Click "Initialize Agent" (takes 2-3 minutes)
+2. **Ask Questions**: Type your research questions
+3. **Get Insights**: Receive detailed answers
+
+## 📋 Example Questions
+
+- "What are the main findings in the research documents?"
+- "Compare methodologies across studies"
+- "Summarize key insights and implications"
+
+## 🔧 Technical Details
+
+- **LLM**: Google Gemini 2.5 Flash
+- **Embeddings**: BAAI/bge-small-en-v1.5  
+- **Vector Store**: Qdrant
+- **Framework**: LlamaIndex
 
     Advanced RAG Pipeline: Implements a robust retrieval system for maximum accuracy:
 

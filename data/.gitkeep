@@ -1,0 +1,9 @@
+# This file ensures the data directory is included in the deployment
+# Place your PDF documents in this directory for processing
+# 
+# To set up your knowledge base after deployment:
+# 1. Upload your PDF files to this directory
+# 2. Call the /ingest endpoint to process them
+#
+# Example PDF files should be named clearly and contain the documents
+# you want to query in your research agent.

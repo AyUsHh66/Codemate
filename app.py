@@ -18,29 +18,40 @@ def initialize_agent():
     """Initialize the research agent"""
     global agent
     if agent is not None:
-        return "Agent already initialized"
+        return "✅ Agent already initialized and ready!"
     
     try:
+        yield "🔄 Starting initialization..."
+        
         from llama_index.core import Settings
         from llama_index.llms.gemini import Gemini
         from llama_index.embeddings.huggingface import HuggingFaceEmbedding
         import config
-        from agent import setup_agent
+        
+        yield "🔄 Loading configuration..."
         
         # Initialize settings
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
-            return "❌ GOOGLE_API_KEY not found. Please set it in the Space settings."
+            yield "❌ GOOGLE_API_KEY not found. Please set it in Space Settings → Variables."
+            return
         
+        yield "🔄 Initializing Gemini LLM..."
         Settings.llm = Gemini(model=config.LLM_MODEL, api_key=api_key)
+        
+        yield "🔄 Loading embedding model (this may take 2-3 minutes)..."
         Settings.embed_model = HuggingFaceEmbedding(model_name=config.EMBED_MODEL)
         
-        # Setup agent
+        yield "🔄 Setting up research agent..."
+        from agent import setup_agent
         agent = setup_agent()
-        return "✅ Agent initialized successfully!"
+        
+        yield "✅ Agent initialized successfully! You can now ask questions."
         
     except Exception as e:
-        return f"❌ Error initializing agent: {str(e)}"
+        error_msg = f"❌ Error initializing agent: {str(e)}"
+        yield error_msg
+        print(f"Initialization error: {e}")  # For logs
 
 def chat_with_agent(message, history):
     """Chat interface for Gradio"""
@@ -94,7 +105,8 @@ with gr.Blocks(title="Codemate Research Agent", theme=gr.themes.Soft()) as demo:
     # Event handlers
     init_btn.click(
         fn=initialize_agent,
-        outputs=status_display
+        outputs=status_display,
+        show_progress=True
     )
     
     submit_btn.click(

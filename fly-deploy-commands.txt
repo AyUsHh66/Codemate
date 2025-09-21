@@ -1,9 +1,0 @@
-# Fly.io Environment Variables Setup
-# Run these commands after account verification
-
-# Set your API keys (replace with your actual keys)
-flyctl secrets set GOOGLE_API_KEY="AIzaSyAf79I6CcM2XBvRo3iD2wwueWVEjX1Ib5E"
-flyctl secrets set LLAMA_CLOUD_API_KEY="llx-Quvj8yjupMz6tKq5969Nrl3LSaztSju6b6JhS3iw4JXiekVV"
-
-# Then deploy
-flyctl deploy
