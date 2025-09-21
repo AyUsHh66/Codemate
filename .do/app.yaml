@@ -1,0 +1,25 @@
+# DigitalOcean App Platform configuration
+# .do/app.yaml
+
+name: codemate-research
+services:
+- name: web
+  source_dir: /
+  github:
+    repo: AyUsHh66/Codemate
+    branch: main
+  run_command: gunicorn --bind 0.0.0.0:8080 --workers 1 --timeout 300 server:app
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: basic-s  # 512MB, upgrade to professional-xs for 1GB
+  routes:
+  - path: /
+  health_check:
+    http_path: /ready
+  envs:
+  - key: PORT
+    value: "8080"
+  - key: PYTHONPATH 
+    value: "/app"
+  - key: FLASK_ENV
+    value: "production"

@@ -13,3 +13,7 @@ torch
 python-dotenv
 flask
 gunicorn
+
+# Optional for enhanced features (can be removed to save space)
+pymupdf4llm
+nougat-ocr
