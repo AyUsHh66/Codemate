@@ -17,6 +17,11 @@ __pycache__/
 /data/
 /embedding_cache/
 
+# Exports and parsed markdown (should not be tracked)
+exports/
+output_parsed_markdown/
+
+
 # IDE and editor configuration files
 .vscode/
 .idea/
