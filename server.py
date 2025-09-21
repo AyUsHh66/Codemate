@@ -36,15 +36,23 @@ def initialize_agent():
         return
 
     try:
-        log.info("Starting agent initialization...")
+        log.info("Starting lightweight agent initialization...")
         # 1. Initialize Settings
         api_key = os.getenv("GOOGLE_API_KEY")
         if not api_key:
             raise ValueError("GOOGLE_API_KEY not found in environment variables.")
 
         Settings.llm = Gemini(model=config.LLM_MODEL, api_key=api_key)
-        Settings.embed_model = HuggingFaceEmbedding(model_name=config.EMBED_MODEL)
-        log.info("✅ Settings initialized.")
+        
+        # Use CPU-only embeddings to save memory
+        import os
+        os.environ["CUDA_VISIBLE_DEVICES"] = ""  # Force CPU usage
+        Settings.embed_model = HuggingFaceEmbedding(
+            model_name=config.EMBED_MODEL,
+            device="cpu",  # Force CPU to save GPU memory
+            cache_folder="./embedding_cache"
+        )
+        log.info("✅ Settings initialized with CPU embeddings.")
 
         # 2. Check for knowledge base
         if not os.path.exists(config.STORAGE_DIR):

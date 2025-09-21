@@ -11,11 +11,12 @@ DOCSTORE_PATH = os.path.join(STORAGE_DIR, "docstore.json")
 
 # Model Configuration
 LLM_MODEL = os.getenv("LLM_MODEL", "models/gemini-2.5-flash")
-EMBED_MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-small-en-v1.5")
+# Use a smaller, more memory-efficient embedding model for deployment
+EMBED_MODEL = os.getenv("EMBED_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 
 # Chunking Configuration
-CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "512"))
-CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "50"))
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "256"))  # Smaller chunks for memory efficiency
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "25"))
 
 # Retrieval Configuration
 VECTOR_TOP_K = int(os.getenv("VECTOR_TOP_K", "10"))  # Number of results from vector search
