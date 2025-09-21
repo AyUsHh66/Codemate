@@ -1,0 +1,14 @@
+gradio
+llama-index
+llama-index-core
+llama-index-agent-openai
+llama-index-retrievers-bm25
+llama-index-vector-stores-qdrant
+llama-index-embeddings-huggingface
+llama-index-llms-gemini
+llama-index-postprocessor-colbert-rerank
+qdrant-client
+rank_bm25
+transformers==4.38.2
+torch
+python-dotenv
