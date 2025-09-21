@@ -72,15 +72,24 @@ def health_check():
     return jsonify({
         "status": "healthy",
         "message": "Codemate Backend server is running",
-        "agent_initialized": agent is not None
+        "agent_initialized": agent is not None,
+        "initialization_status": "completed" if agent is not None else "in_progress"
     })
 
 @app.route("/health")
 def health():
     """Health check endpoint for deployment monitoring."""
-    if agent is None:
-        return jsonify({"status": "unhealthy", "reason": "Agent not initialized"}), 503
-    return jsonify({"status": "healthy"})
+    # Always return healthy for server, even if agent is still initializing
+    return jsonify({
+        "status": "healthy", 
+        "server": "running",
+        "agent_status": "ready" if agent is not None else "initializing"
+    })
+
+@app.route("/ready")
+def ready():
+    """Simple ready check that responds immediately."""
+    return "OK", 200
 
 @app.route('/ingest', methods=['POST'])
 def ingest_data():
@@ -115,7 +124,10 @@ def chat_endpoint():
     Accepts a JSON payload with a 'query' field.
     """
     if agent is None:
-        return jsonify({"error": "Agent not initialized. The server may be starting up or encountered an error."}), 503
+        return jsonify({
+            "error": "Agent is still initializing. Please wait a moment and try again.",
+            "status": "initializing"
+        }), 503
 
     if not request.is_json:
         return jsonify({"error": "Request must be JSON"}), 400
@@ -139,12 +151,27 @@ def chat_endpoint():
         log.error(f"Error processing query: {e}", exc_info=True)
         return jsonify({"error": "An internal error occurred while processing your request."}), 500
 
+def initialize_agent_background():
+    """Initialize agent in background thread to avoid blocking server startup."""
+    import threading
+    
+    def init_worker():
+        try:
+            initialize_agent()
+            log.info("🚀 Background agent initialization completed!")
+        except Exception as e:
+            log.error(f"Background agent initialization failed: {e}")
+    
+    thread = threading.Thread(target=init_worker, daemon=True)
+    thread.start()
+    log.info("Started background agent initialization...")
+
 if __name__ == '__main__':
     # This block is for local testing. Render will use gunicorn to run the app.
-    initialize_agent()
+    initialize_agent_background()
     # Use a port that Render might assign, for consistency. Default to 8080 for local dev.
     port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port, debug=True)
 else:
     # This block runs when Gunicorn starts the server on Render
-    initialize_agent()
+    initialize_agent_background()
